@@ -4,6 +4,7 @@ const updateModule = require('./update');
 const deleteModule = require('./delete');
 
 const Location = require('../../../models/Location');
+const Appointment = require('../../../models/Appointment');
 
 async function test1(){
     const current_location = new Location({
@@ -295,6 +296,221 @@ async function test15() {
     }
 }
 
+async function test16(){
+    
+    const current_appointment = {
+        "_id": "657f45a1c8e34b001a8d9e2f",
+        "id_fixer": "fixer_78910",
+        "id_requester": "user_45678",
+        "selected_date": "2024-01-15T00:00:00.000Z",
+        "selected_date_state": "partially-occupied",
+        "schedules": [
+            {
+                "_id": "657f45a1c8e34b001a8d9e30",
+                "starting_time": "2024-01-15T14:00:00.000Z",
+                "finishing_time": "2024-01-15T15:00:00.000Z",
+                "schedule_state": "booked"
+            },
+            {
+                "_id": "657f45a1c8e34b001a8d9e31",
+                "starting_time": "2024-01-15T16:00:00.000Z",
+                "finishing_time": "2024-01-15T17:00:00.000Z", 
+                "schedule_state": "occupied"
+            }
+        ],
+        "current_requester_name": "María González",
+        "appointment_type": "presential",
+        "appointment_description": "Reunión para revisión de proyecto de construcción",
+        "place_id": "appointment_35792468",
+        "link_id": "meet_86420",
+        "current_requester_phone": "+34 612 345 678",
+        "createdAt": "2024-01-10T09:30:00.000Z",
+        "updatedAt": "2024-01-10T10:15:00.000Z"
+    };
+
+    try{
+        const final_appointment = await createModule.create_appointment(current_appointment);
+        console.log('Guardado: ', final_appointment);
+    }catch(err){
+        console.log('Error: ', err);
+    }
+}
+
+async function test17(){
+    const current_appointment = {
+        "_id": "65a3c4d5e6f7f8001c4d5e6f",
+        "id_fixer": "fixer_55667",
+        "id_requester": "user_11111",
+        "selected_date": "2024-08-22T00:00:00.000Z",
+        "selected_date_state": "partially-occupied",
+        "schedules": [
+            {
+                "_id": "65a2b3c4d5e6f7001b3c4d5f",
+                "starting_time": "2024-08-22T11:00:00.000Z",
+                "finishing_time": "2024-08-22T12:30:00.000Z",
+                "schedule_state": "booked"
+            },
+            {
+                "_id": "65a2b3c4d5e6f7001b3c4d60",
+                "starting_time": "2024-08-22T16:00:00.000Z",
+                "finishing_time": "2024-08-22T17:00:00.000Z",
+                "schedule_state": "occupied"
+            }
+        ],
+        "current_requester_name": "Roberto Silva",
+        "appointment_type": "virtual",
+        "appointment_description": "Asesoría financiera personalizada",
+        "place_id": "appointment_99999999",
+        "link_id": "meet_32222",
+        "current_requester_phone": "+56 9 8765 4321",
+        "createdAt": "2024-08-10T15:20:00.000Z",
+        "updatedAt": "2024-08-15T09:45:00.000Z"
+    }
+
+    try{
+        const final_appointment = await createModule.insert_one_appointment(current_appointment);
+        console.log('Guardado: ', final_appointment);
+    }catch(err){
+        console.log('Error: ', err);
+    }
+}
+
+async function test18(){
+    const current_appointments = [
+        {
+            "_id": "659b2c4d8f12e3001c9d7a8b",
+            "id_fixer": "fixer_33445",
+            "id_requester": "user_11223",
+            "selected_date": "2024-03-10T00:00:00.000Z",
+            "selected_date_state": "available",
+            "schedules": [
+                {
+                    "_id": "659b2c4d8f12e3001c9d7a8c",
+                    "starting_time": "2024-03-10T09:00:00.000Z",
+                    "finishing_time": "2024-03-10T10:00:00.000Z",
+                    "schedule_state": "booked"
+                }
+            ],
+            "current_requester_name": "Ana Martínez",
+            "appointment_type": "presential",
+            "appointment_description": "Reunión inicial de consultoría empresarial",
+            "place_id": "appointment_55123789",
+            "link_id": "meet_88421",
+            "current_requester_phone": "+52 55 1234 5678",
+            "createdAt": "2024-03-01T11:00:00.000Z",
+            "updatedAt": "2024-03-05T08:30:00.000Z"
+        },
+        {
+            "_id": "659c3d5e9a23f4001dae8b9c",
+            "id_fixer": "fixer_66778",
+            "id_requester": "user_44556",
+            "selected_date": "2024-04-05T00:00:00.000Z",
+            "selected_date_state": "partially-occupied",
+            "schedules": [
+                {
+                    "_id": "659c3d5e9a23f4001dae8b9d",
+                    "starting_time": "2024-04-05T11:00:00.000Z",
+                    "finishing_time": "2024-04-05T12:30:00.000Z",
+                    "schedule_state": "occupied"
+                },
+                {
+                    "_id": "659c3d5e9a23f4001dae8b9e",
+                    "starting_time": "2024-04-05T14:00:00.000Z",
+                    "finishing_time": "2024-04-05T15:00:00.000Z",
+                    "schedule_state": "booked"
+                }
+            ],
+            "current_requester_name": "Luis Fernández",
+            "appointment_type": "virtual",
+            "appointment_description": "Sesión de coaching ejecutivo",
+            "place_id": "appointment_66234890",
+            "link_id": "meet_99532",
+            "current_requester_phone": "+34 91 876 5432",
+            "createdAt": "2024-03-25T16:45:00.000Z",
+            "updatedAt": "2024-04-01T10:15:00.000Z"
+        },
+        {
+            "_id": "659d4e6fab34c5001ebf9cad",
+            "id_fixer": "fixer_88990",
+            "id_requester": "user_77889",
+            "selected_date": "2024-05-15T00:00:00.000Z",
+            "selected_date_state": "occupied",
+            "schedules": [
+                {
+                    "_id": "659d4e6fab34c5001ebf9cae",
+                    "starting_time": "2024-05-15T13:00:00.000Z",
+                    "finishing_time": "2024-05-15T14:30:00.000Z",
+                    "schedule_state": "cancelled"
+                },
+                {
+                    "_id": "659d4e6fab34c5001ebf9caf",
+                    "starting_time": "2024-05-15T16:00:00.000Z",
+                    "finishing_time": "2024-05-15T17:00:00.000Z",
+                    "schedule_state": "occupied"
+                }
+            ],
+            "current_requester_name": "Sophie Dubois",
+            "appointment_type": "presential",
+            "appointment_description": "Presentación de proyecto de marketing",
+            "place_id": "appointment_77345901",
+            "link_id": "meet_10643",
+            "current_requester_phone": "+33 1 42 86 53 21",
+            "createdAt": "2024-05-01T09:20:00.000Z",
+            "updatedAt": "2024-05-10T14:50:00.000Z"
+        },
+        {
+            "_id": "659e5f80bc45d6001fc0adbe",
+            "id_fixer": "fixer_00112",
+            "id_requester": "user_99001",
+            "selected_date": "2024-06-20T00:00:00.000Z",
+            "selected_date_state": "available",
+            "schedules": [
+                {
+                    "_id": "659e5f80bc45d6001fc0adbf",
+                    "starting_time": "2024-06-20T08:30:00.000Z",
+                    "finishing_time": "2024-06-20T10:00:00.000Z",
+                    "schedule_state": "booked"
+                }
+            ],
+            "current_requester_name": "John Smith",
+            "appointment_type": "virtual",
+            "appointment_description": "Training session on new software tools",
+            "place_id": "appointment_88456012",
+            "link_id": "meet_21754",
+            "current_requester_phone": "+44 20 7946 0958",
+            "createdAt": "2024-06-10T13:10:00.000Z",
+            "updatedAt": "2024-06-15T11:25:00.000Z"
+        }
+    ];
+
+    try{
+        const final_appointments = await createModule.insert_many_appointments(current_appointments);
+        console.log('Guardado: ', final_appointments);
+    }catch(err){
+        console.log('Error: ', err);
+    }
+}
+
+async function test19(){
+    try{
+        const final_appointments = await readModule.get_all_appointments();
+        console.log('Acceso Correcto: ', final_appointments);
+    }catch(err){
+        console.log('Error: ', err);
+    }
+}
+
+async function test20(){
+    try{
+        const fixer_id = 'fixer_55667';
+        const month = 8;
+        const final_schedules = await readModule.get_schedules_by_fixer_month(fixer_id, month);
+        console.log('Acceso Correcto: ', final_schedules);
+    }catch(err){
+        console.log('Error: ', err)
+    }
+}
+
 //test1();
 //test2();
 //test3();
@@ -310,3 +526,8 @@ async function test15() {
 //test13();
 //test14();
 //test15();
+//test16();
+//test17();
+//test18();
+//test19();
+test20();
