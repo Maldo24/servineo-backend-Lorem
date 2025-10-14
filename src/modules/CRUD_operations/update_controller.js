@@ -158,19 +158,6 @@ export async function updateAppointmentById(req, res) {
   }
 }
 
-// TODO:endpoint mateo
-// ! cambios para gabo
-/*
-  Este endpoint recibe un id requester, id fixer, una fecha y un horario
-{
-  success: true ? false,
-  message: "asdfasdf",
-  status: "occuped" || "available" || "partial"
-  name: "nombre del fixer",
-}
-
-*/
-
 export async function updateManyAppointmentsByIds(req, res) {
   try {
     const { ids, attributes } = req.query;
