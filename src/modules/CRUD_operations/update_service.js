@@ -65,9 +65,30 @@ async function update_all_locations_fields(attributes) {
 
 //Appointments
 async function update_appointment_by_id(id, attributes) {
-  await set_db_connection();
-  return await Appointment.findByIdAndUpdate(id, { $set: attributes }, { new: true });
+  try {
+    await set_db_connection();
+
+    // !atributos hay que tener cuidado con schedule
+    // TODO: desestructurar schedule
+
+    const docUpdate = await Appointment.findByIdAndUpdate(
+      id,
+      { $set: attributes },
+      { new: true, runValidators: true },
+    );
+
+    if (docUpdate) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (err) {
+    throw new Error(err.message);
+  }
 }
+
+//
+
 async function update_many_appointments_by_ids(ids, attributes) {
   await set_db_connection();
   await Appointment.updateMany({ _id: { $in: ids } }, { $set: attributes });

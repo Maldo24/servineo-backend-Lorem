@@ -133,22 +133,43 @@ export async function updateManyLocationsFieldsByQuery(res, req) {
 }
 
 // Appointments - Controladores faltantes
+
 export async function updateAppointmentById(req, res) {
   try {
-    const { id, attributes } = req.query;
-    if (id === '') {
-      return res.status(400).json({ message: 'Missing parameter: id.' });
+    const id = req.query.id;
+    const attributes = req.body;
+
+    if (!id || !attributes) {
+      return res.status(400).json({ message: 'Missing parameters: required id and attributes.' });
     }
-    await appointmentAttributeValidation(attributes, res);
-    const data = await update_appointment_by_id(id, attributes);
-    const output_fail = 'Appointment data could not modified.';
-    const output_success = 'Appointment data modified. ';
-    await dataExist(data, output_fail, output_success, res);
+
+    const updateData = Object.fromEntries(
+      Object.entries(attributes).filter((v) => v !== undefined && v !== null),
+    );
+
+    const modified = await update_appointment_by_id(id, updateData);
+
+    res.status(200).json({ message: 'Updated succesfully', modified });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'Error updating appointment data.' });
+    res
+      .status(500)
+      .json({ message: 'Error updating appointment data.', modified: false, error: err.message });
   }
 }
+
+// TODO:endpoint mateo
+// ! cambios para gabo
+/*
+  Este endpoint recibe un id requester, id fixer, una fecha y un horario
+{
+  success: true ? false,
+  message: "asdfasdf",
+  status: "occuped" || "available" || "partial"
+  name: "nombre del fixer",
+}
+
+*/
 
 export async function updateManyAppointmentsByIds(req, res) {
   try {
