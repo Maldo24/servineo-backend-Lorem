@@ -23,6 +23,7 @@ import {
   get_requester_schedules_by_fixer_day,
   get_all_requester_schedules_by_fixer_day,
   get_modal_form_appointment,
+  get_meeting_status
 } from './read_service.js'; // llamamos al service
 import {
   locationQueryValidation,
@@ -455,5 +456,19 @@ export async function getModalFormAppointment(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error fetching modal form appointment data.' });
+  }
+}
+
+export async function getMeetingStatus(req, res){
+  try{
+    const { id_requester, id_fixer, selected_date, starting_time } = req.body;
+    if(!id_requester || !id_fixer || !selected_date || !starting_time){
+      res.status(400).json({ message: 'Missing parameter function' });
+    }
+    const { name, status } = await get_meeting_status(id_requester, id_fixer, selected_date, starting_time);
+    console.log(name, status);
+    res.status(200).json({ message: 'Meeting status successfully accessed', name,  status});
+  }catch(err){
+    res.status(500).json({ message: 'Error updating appointment data', name: "", status: "", error: err.message });
   }
 }

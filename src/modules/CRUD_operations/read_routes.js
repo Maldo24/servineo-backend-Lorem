@@ -22,6 +22,7 @@ import {
   getRequesterSchedulesByFixerDay,
   getAllRequesterSchedulesByFixerDay,
   getModalFormAppointment,
+  getMeetingStatus
 } from './read_controller.js';
 
 const router = Router();
@@ -65,5 +66,7 @@ router.get('/schedules/get_by_fixer_other_requesters_day', getAllRequesterSchedu
 
 // Ruta para Modal Form
 router.get('/appointments/get_modal_form', getModalFormAppointment);
+
+router.get('/appointments/get_meeting_status', getMeetingStatus);
 
 export default router;
