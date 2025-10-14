@@ -132,7 +132,7 @@ export async function updateManyLocationsFieldsByQuery(res, req) {
   }
 }
 
-// Appointments - Controladores faltantes
+// Appointments
 export async function updateAppointmentById(req, res) {
   try {
     const id = req.query.id;
