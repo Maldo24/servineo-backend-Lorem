@@ -1,5 +1,5 @@
 import { Jobspay } from '../../models/jobsPayment.model';
-import { User } from '../../models/userPayment.model';
+import User from '../../models/userPayment.model';
 import type { Request, Response } from 'express';
 
 // =========================
@@ -60,10 +60,10 @@ export const listJobs = async (req: Request, res: Response) => {
 
     // 6️⃣ Retornar los trabajos encontrados
     res.json(jobs);
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Tipado de 'error'
     console.error('🔥 Error listJobs:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: (error as Error).message });
   }
 };
 
@@ -116,8 +116,8 @@ export const listFixerJobs = async (req: Request, res: Response) => {
 
     // 4️⃣ Retornar los trabajos encontrados
     res.json(jobs);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('🔥 Error listFixerJobs:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: (error as Error).message });
   }
 };

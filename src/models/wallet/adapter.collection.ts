@@ -13,13 +13,7 @@ interface WalletDocument {
   [key: string]: unknown;
 }
 
-// Verificar que la conexión esté establecida
-function getDb(): mongoose.mongo.Db {
-  if (!mongoose.connection.db) {
-    throw new Error('Database connection not established');
-  }
-
-function ensureDb() {
+function getDb() {
   if (!mongoose.connection.db) throw new Error('Database not connected');
   return mongoose.connection.db;
 }
@@ -46,7 +40,7 @@ export function makeWalletCollectionByUserIdAdapter(
   collectionName: string,
   idField: string = 'users_id',
 ): WalletModelAdapter {
-  interface WalletSeparateDoc {
+  /*interface WalletSeparateDoc {
     balance?: number;
     lowBalanceThreshold?: number;
     flags?: unknown;
@@ -59,7 +53,7 @@ export function makeWalletCollectionByUserIdAdapter(
     lowBalanceThreshold?: number;
     flags?: unknown;
     lastLowBalanceNotification?: Date | null;
-  }
+  } */
   return {
     async getWalletById(fixerId: string): Promise<WalletSlice | null> {
       const db = getDb();
@@ -81,7 +75,7 @@ export function makeWalletCollectionByUserIdAdapter(
       if (!doc) return null;
 
       // Mapeo seguro de datos
-      const flags = (doc.flags as Record<string, unknown>) ?? null;
+      //const flags = (doc.flags as Record<string, unknown>) ?? null;
 
       return {
         balance: Number(doc.balance ?? 0),

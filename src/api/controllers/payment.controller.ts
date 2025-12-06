@@ -1,8 +1,9 @@
 import Stripe from 'stripe';
 import { Payment } from '../../models/payment.model';
-import { Card } from '../../models/card.model';
-import { User } from '../../models/userPayment.model';
-import { Jobspay } from '../../models/jobsPayment.model';
+import Card from '../../models/card.model';
+import User from '../../models/userPayment.model';
+// import Jobspay from '../../models/jobsPayment.model';
+import Job from '../../models/jobPayment.model';
 import 'dotenv/config';
 import type { Request, Response } from 'express';
 import axios from 'axios'; // 🆕 Importar axios (o node-fetch si no usas axios)
@@ -36,6 +37,7 @@ const verifyRecaptchaToken = async (token: string) => {
       `https://www.google.com/recaptcha/api/siteverify?secret=${RECAPTCHA_SECRET_KEY}&response=${token}`,
     );
     // La propiedad 'success' es true si la verificación es correcta
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (response.data as any).success;
   } catch (error) {
     console.error('❌ Error al contactar con la API de reCAPTCHA:', error);

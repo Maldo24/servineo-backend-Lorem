@@ -5,8 +5,9 @@ import { Payment } from '../../models/payment.model';
 import { Comision } from '../../models/historycomission.model';
 import { Wallet } from '../../models/wallet.model';
 // import {Job} from "../../models/jobPayment.model";
-import { User } from '../../models/userPayment.model';
+import User from '../../models/userPayment.model';
 import { Jobspay } from '../../models/jobsPayment.model';
+import { updateWalletLowBalanceFlags } from '../../services/walletLowBalance.service';
 
 const MAX_ATTEMPTS = 3;
 const LOCK_MINUTES = 10;
@@ -148,7 +149,7 @@ export async function confirmPaymentLab(req: Request, res: Response) {
         } else {
           console.warn(`⚠️ No se encontró el job ${confirmedPayment.jobId}`);
         }
-      } catch (jobError: any) {
+      } catch (jobError: unknown) {
         console.error(`❌ Error actualizando job ${confirmedPayment.jobId}:`, jobError);
       }
     } else {
@@ -163,7 +164,7 @@ export async function confirmPaymentLab(req: Request, res: Response) {
     try {
       // 1. Buscar los datos que faltan (Job y Requester/Payer)
       const [job, requester] = await Promise.all([
-        Job.findById(confirmedPayment.jobId).session(session), // Usar 'Job' (detallado)
+        Jobspay.findById(confirmedPayment.jobId).session(session), // Usar 'Job' (detallado)
         User.findById(confirmedPayment.payerId).session(session),
       ]);
 
@@ -180,7 +181,9 @@ export async function confirmPaymentLab(req: Request, res: Response) {
           {
             $set: {
               requesterName: requester.name,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               companyName: (requester as any).companyName || 'N/A',
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               taxId: (requester as any).taxId || 'N/A',
               jobType: job.type,
               jobDescription: job.description,
@@ -196,8 +199,8 @@ export async function confirmPaymentLab(req: Request, res: Response) {
 
         console.log(`✅ Datos de factura añadidos al pago ${confirmedPayment._id}`);
       }
-    } catch (invoiceError: any) {
-      console.error('❌ Error en trigger de facturación:', invoiceError.message);
+    } catch (invoiceError: unknown) {
+      console.error('❌ Error en trigger de facturación:', (invoiceError as Error).message);
     }
     // ============================================
     // FIN DE LÓGICA DE FACTURACIÓN
@@ -264,8 +267,11 @@ export async function confirmPaymentLab(req: Request, res: Response) {
             lowBalanceThreshold: fixerWallet.lowBalanceThreshold,
             session,
           });
-        } catch (flagsError: any) {
-          console.error('❌ Error actualizando flags de saldo bajo en wallet:', flagsError.message);
+        } catch (flagsError: unknown) {
+          console.error(
+            '❌ Error actualizando flags de saldo bajo en wallet:',
+            (flagsError as Error).message,
+          );
         }
       } else {
         estadoComision = 'fallida';
@@ -299,7 +305,7 @@ export async function confirmPaymentLab(req: Request, res: Response) {
 
     console.info(`Payment ${id}: confirmado exitosamente + triggers ejecutados`);
 
-    const finalPaymentDoc = await Payment.findById(id).lean();
+    //const finalPaymentDoc = await Payment.findById(id).lean();
 
     return res.json({
       message: 'pago confirmado exitosamente',

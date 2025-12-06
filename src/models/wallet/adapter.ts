@@ -31,25 +31,20 @@ function normalizeId(raw: string): mongoose.Types.ObjectId | string {
   return /^[0-9a-fA-F]{24}$/.test(s) ? new mongoose.Types.ObjectId(s) : s;
 }
 
-// Tipamos el retorno explícitamente como la DB nativa de Mongo
-function getDb(): mongoose.mongo.Db {
-  if (!mongoose.connection.db) {
-    throw new Error('Database connection not established');
-  }
-}
-function ensureDb() {
+function getDb() {
   if (!mongoose.connection.db) throw new Error('Database not connected');
   return mongoose.connection.db;
 }
 
 // Wallet embebido dentro de la colección de usuarios (campo wallet.*)
 export function makeRawCollectionWalletAdapter(collectionName: string): WalletModelAdapter {
-  interface RawWalletSubDoc {
+  /*interface RawWalletSubDoc {
     balance?: number;
     lowBalanceThreshold?: number;
     flags?: unknown;
     lastLowBalanceNotification?: Date | null;
   }
+
   interface RawWalletDoc {
     _id: mongoose.Types.ObjectId | string;
     wallet?: RawWalletSubDoc;
@@ -60,7 +55,7 @@ export function makeRawCollectionWalletAdapter(collectionName: string): WalletMo
     'wallet.lowBalanceThreshold'?: number;
     'wallet.flags'?: unknown;
     'wallet.lastLowBalanceNotification'?: Date | null;
-  }
+  } */
   return {
     async getWalletById(fixerId: string): Promise<WalletSlice | null> {
       const _id = normalizeId(fixerId);

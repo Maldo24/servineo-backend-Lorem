@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { Payment } from '../../models/payment.model';
-import { User } from '../../models/userPayment.model';
+import User from '../../models/userPayment.model';
 import { MongoServerError } from 'mongodb';
+import Jobspay from '../../models/jobsPayment.model';
 
 const CODE_EXPIRATION_MS = 48 * 60 * 60 * 1000;
 
@@ -58,7 +59,7 @@ export const createPaymentLab = async (req: Request, res: Response) => {
     }
 
     // ===== VERIFICAR QUE LOS USUARIOS EXISTAN =====
-    let [requester, fixer] = await Promise.all([
+    const [requester, fixer] = await Promise.all([
       User.findById(requesterId),
       User.findById(fixerId),
     ]);
@@ -192,8 +193,11 @@ export const createPaymentLab = async (req: Request, res: Response) => {
       console.log(`[createPaymentLab] Actualizando 'jobspays' a Pendiente para jobId: ${jobId}`);
       await Jobspay.findByIdAndUpdate(jobId, { $set: { status: 'pago pendiente' } });
       console.log(`[createPaymentLab] ✅ 'jobspays' actualizado.`);
-    } catch (jobError: any) {
-      console.error("❌ Error al actualizar 'jobspays' en createPaymentLab:", jobError.message);
+    } catch (jobError: unknown) {
+      console.error(
+        "❌ Error al actualizar 'jobspays' en createPaymentLab:",
+        (jobError as Error).message,
+      );
       // No bloqueamos la respuesta si esto falla, pero lo logueamos
     }
 
@@ -217,7 +221,7 @@ export const createPaymentLab = async (req: Request, res: Response) => {
     if ((e as Error)?.name === 'ValidationError') {
       return res.status(400).json({ error: (e as Error).message });
     }
-    if ((e as any)?.name === 'CastError') {
+    if ((e as Error)?.name === 'CastError') {
       return res.status(400).json({ error: 'ObjectId inválido en la base de datos' });
     }
     return res.status(500).json({
@@ -268,11 +272,11 @@ export const regeneratePaymentCode = async (req: Request, res: Response) => {
       },
     });
   } catch (e: unknown) {
-    const error = e as any;
+    const error = e as Error;
     if (error?.name === 'ValidationError') {
       return res.status(400).json({ error: error.message });
     }
-    if ((e as any)?.code === 11000) {
+    if ((e as MongoServerError)?.code === 11000) {
       return res.status(409).json({ error: 'conflicto de código, intente nuevamente' });
     }
     return res.status(500).json({ error: error?.message || 'Error regenerando código' });
